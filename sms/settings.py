@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from telnetlib import AUTHENTICATION
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -114,12 +115,17 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-AUTH_USER_MODEL = 'main.CustomUser'
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+
+AUTH_USER_MODEL = 'main.CustomUser'
+
+AUTHENTICATION_BACKENDS = ['main.EmailBackEnd.EmailBackEnd']
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
