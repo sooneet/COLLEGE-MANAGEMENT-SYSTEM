@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse,HttpResponseRedirect
 from . EmailBackEnd import EmailBackEnd
 from django.contrib.auth import authenticate,login,logout
@@ -29,11 +29,11 @@ def doLogin(request):
             login(request,user)
             user_type = user.user_type
             if user_type == '1':
-                return HttpResponse('<h2>Admin login</h2>')
+                return redirect('admin_home')
             elif user_type == '2':
-                return HttpResponse('<h2>Staff login</h2>')  
+                return redirect('staff_home')  
             elif user_type == '3':
-                return HttpResponse('<h2>Student login</h2>')  
+                return redirect('student_home')  
             else:
                 messages.error(request,'passwor or email is invalid')
                 return HttpResponse('<h2>login page<h2>')    

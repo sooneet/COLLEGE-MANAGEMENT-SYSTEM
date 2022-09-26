@@ -5,11 +5,11 @@ from . models import (CustomUser, AdminHOD, Staffs, Courses,
                     LeaveReportStudent, LeaveReportStaff, FeedBackStudent,
                      FeedBackStaffs, NotificationStudent, NotificationStaffs)
 # Register your models here.
-class UserModel(UserAdmin):
-    pass
-admin.site.register(CustomUser,UserModel)
+# class UserModel(UserAdmin):
+#     pass
+# admin.site.register(CustomUser,UserModel)
 
-# admin.site.register(CustomUser)
+admin.site.register(CustomUser)
 admin.site.register(AdminHOD)
 admin.site.register(Staffs)
 admin.site.register(Courses)
