@@ -1,7 +1,7 @@
 from http.client import HTTPResponse
 from django.shortcuts import render,redirect
 from django.contrib import messages
-from . models import Courses, CustomUser, SessionYearModel, Staffs, Student
+from . models import Courses, CustomUser, SessionYearModel, Staffs, Student, Subjects
 from . forms import AddStudentForm, EditStudentForm
 from django.core.files.storage import FileSystemStorage
 
@@ -201,6 +201,80 @@ def delete_course(request,course_id):
         messages.success(request,'Failed to delete Course!')    
         return redirect('manage_course')    
 
+def manage_subject(request):
+    subjects = Subjects.objects.all()
+    return render(request,'hod_template/manage_subject_template.html',{'subjects':subjects})
+
+def add_subject(request):
+    staffs = CustomUser.objects.filter(user_type=2)
+    courses = Courses.objects.all()
+    context = {
+        'staffs':staffs,
+        'courses':courses,
+    }
+    return render(request,'hod_template/add_subject_template.html',context)
+
+def add_subject_save(request):
+    if request.method != "POST":
+        messages.error(request,'Method Not Allowed!')
+        return redirect('add_subject')
+    else:
+        subject_name = request.POST.get('subject')
+
+        course_id = request.POST.get('course')
+        course = Courses.objects.get(id=course_id)
+
+        staff_id  = request.POST.get('staff')  
+        staff  = Staffs.objects.get(id=staff_id)
+
+        try:
+            subject = Subjects(subject_name=subject_name,course_id=course,staff_id=staff)
+            subject.save()
+            messages.success(request,"Subject Added Successfully!")
+            return redirect('add_subject')
+        except:
+            messages.error(request,"Failed to Add Subject!")
+            return redirect('add_subject')
+
+def edit_subject(request,subject_id):
+    staffs = CustomUser.objects.filter(user_type='2')
+    subject = Subjects.objects.get(id=subject_id)
+    courses = Courses.objects.all()
+    context = {
+        'staffs' : staffs,
+        'subject' : subject,
+        'courses' : courses,
+        'id' :subject_id
+    }
+    return render(request,'hod_template/edit_subject_template.html',context)
+
+def edit_subject_save(request):
+    if request.method != "POST":
+        messages.error(request,'Invalid Method')
+        return redirect('edit_subject')
+    else:
+        subject_name = request.POST.get('subject') 
+        subject_id = request.POST.get('subject_id') 
+        course_id = request.POST.get('course') 
+        staff_id  = request.POST.get('staff')
+
+        try:
+            subject = Subjects.objects.get(id=subject_id)
+            subject.subject_name = subject_name
+
+            course = Courses.objects.get(id=course_id)
+            subject.course_id = course
+
+            staff = Staffs.objects.get(id=staff_id)
+            staff.staff_id = staff
+
+            subject.save()
+
+            messages.success(request,'Subject Updated Successfully.')
+            return redirect('/edit_subject/'+subject_id)
+        except:
+            messages.success(request,'Failed to Update Subject.')
+            return redirect('/edit_subject/'+subject_id)   
 
 # def add_session(request):
 #     return render(request,"hod_template/add_session_template.html")    
